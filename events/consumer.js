@@ -3,7 +3,7 @@ const { getAllLocations } = require('../services/location.service');
 const { haversineKm } = require('../services/proximity.service');
 const { logNotification } = require('../services/notificationLog.service');
 const { createAdminAlert } = require('../services/adminAlert.service');
-const { sendToUser, getConnectedUserIds } = require('../websocket/wsServer');
+const { sendToUser } = require('../websocket/wsServer');
 const config = require('../config');
 
 const startConsumer = async () => {

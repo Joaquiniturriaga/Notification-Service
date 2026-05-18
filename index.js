@@ -13,7 +13,6 @@ const start = async () => {
         await initDB();
         await connectRabbit();
         await startConsumer();
-        initWebSocket(server);
 
         server.listen(config.PORT, () => {
             console.log(`Notification Service running on port ${config.PORT}`);

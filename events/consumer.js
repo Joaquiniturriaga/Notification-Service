@@ -35,7 +35,6 @@ const processReport = async (report) => {
 
     // Get all known user locations
     const locations = await getAllLocations();
-    const connectedIds = new Set(getConnectedUserIds());
 
     let notifiedCount = 0;
 

@@ -50,7 +50,7 @@ const processReport = async (report) => {
             const userId = loc.user_id;
 
             // Send real-time alert if user is connected via WebSocket
-            const delivered = sendToUser(userId, {
+            sendToUser(userId, {
                 type: 'FIRE_ALERT',
                 reportId,
                 title,
@@ -60,7 +60,7 @@ const processReport = async (report) => {
                 message: `Active fire report ${distanceKm.toFixed(1)}km from your location`,
             });
 
-            if (delivered) notifiedCount++;
+            notifiedCount++;
 
             // Always log regardless of WS connection (audit trail)
             await logNotification(userId, reportId, title, distanceKm);

@@ -12,10 +12,19 @@ const getAlerts = async (req, res) => {
 const markReviewed = async (req, res) => {
     try {
         const { id } = req.params;
-        const alert = await reviewAlert(parseInt(id));
+        const { status } = req.body;
 
-        if (!alert) {
-            return res.status(404).json({ error: 'Alert not found' });
+        const validStatuses  = ['REVIEWED', 'CONTROLLED', 'DISMISSED', 'IN_PROGRESS'];
+        
+        if (!validStatuses.includes(status)) {
+            return res.status(404).json({ error: `Invalid status, Valid options: ${validStatuses.join(', ')}`});
+        }
+
+        const alert = await reviewAlert(parseInt(id), status);
+
+        if (!alert){
+            return res.status(404).json({error: 'Alert not found'});
+            
         }
 
         res.status(200).json(alert);

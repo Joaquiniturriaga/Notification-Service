@@ -17,13 +17,13 @@ const getAllAlerts = async () => {
     return rows;
 };
 
-const reviewAlert = async (id) => {
+const reviewAlert = async (id, status) => {
     const { rows } = await pool.query(
         `UPDATE admin_alerts
-         SET status = 'REVIEWED', reviewed_at = NOW()
+         SET status = $2, reviewed_at = NOW()
          WHERE id = $1
          RETURNING *`,
-        [id]
+        [id, status]
     );
     return rows[0] || null;
 };

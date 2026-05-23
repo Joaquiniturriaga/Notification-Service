@@ -12,7 +12,7 @@ const STATUS_MAP = {
 const syncReportStatus = (reportId, status) => {
     return new Promise((resolve) => {
         const reportUrl = process.env.REPORT_SERVICE_URL || ''
-        const url = new URL(`/api/reports/${reportId}/status`, reportUrl)
+        const url = new URL(`/api/reports/internal/${reportId}/status`, reportUrl)
         const data = JSON.stringify({ status })
 
         const options = {

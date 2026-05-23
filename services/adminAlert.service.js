@@ -62,10 +62,11 @@ const reviewAlert = async (id, status) => {
 
     if (alert && alert.report_id) {
         const reportStatus = STATUS_MAP[status] || 'ACTIVE'
+        console.log('Syncing report', alert.report_id, '→', reportStatus)
+        console.log('REPORT_SERVICE_URL:', process.env.REPORT_SERVICE_URL)
         syncReportStatus(alert.report_id, reportStatus)
             .catch(err => console.error('Sync error:', err.message))
     }
-
     return alert
 }
 

@@ -1,4 +1,15 @@
 const pool = require('../config/db');
+const fetch = require('node-fetch');
+
+
+const STATUS_MAP = {
+    CONTROLLED:  'CONTROLLED',
+    REVIEWED:    'REVIEWED',
+    DISMISSED:   'DISMISSED',
+    IN_PROGRESS: 'ACTIVE',
+    PENDING:     'ACTIVE',
+};
+
 
 const createAdminAlert = async ({ report_id, report_title, lat, lng, notified_count }) => {
     const { rows } = await pool.query(
@@ -25,7 +36,26 @@ const reviewAlert = async (id, status) => {
          RETURNING *`,
         [id, status]
     );
-    return rows[0] || null;
+    const alert = rows[0] || null;
+ 
+    if (alert && alert.report_id) {
+        const reportStatus = STATUS_MAP[status] || 'ACTIVE';
+        const reportUrl = process.env.REPORT_SERVICE_URL;
+        if (reportUrl) {
+            try {
+                await fetch(`${reportUrl}/api/reports/${alert.report_id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: reportStatus }),
+                });
+            } catch (err) {
+                console.error('Failed to sync report status:', err.message);
+            }
+        }
+    }
+ 
+    return alert;
 };
-
+ 
 module.exports = { createAdminAlert, getAllAlerts, reviewAlert };
+ 

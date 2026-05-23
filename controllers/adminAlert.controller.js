@@ -10,6 +10,8 @@ const getAlerts = async (req, res) => {
 };
 
 const markReviewed = async (req, res) => {
+    console.log('markReviewed called, id:', req.params.id, 'status:', req.body.status)
+
     try {
         const { id } = req.params;
         const { status } = req.body;

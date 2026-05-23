@@ -28,6 +28,11 @@ const getAllAlerts = async () => {
     return rows;
 };
 
+//
+
+//
+
+//
 const reviewAlert = async (id, status) => {
     const { rows } = await pool.query(
         `UPDATE admin_alerts

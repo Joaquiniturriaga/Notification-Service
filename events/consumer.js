@@ -10,6 +10,9 @@ const startConsumer = async () => {
     const channel = getChannel();
 
     channel.consume('reports_queue', async (msg) => {
+
+        //noAck: false esto significa que se elmina de la cola si hacemos channel.ack() 
+        //si el proceso falla o el servicio cae rabbitMQ reencola el mensaje
         if (!msg) return;
 
         try {
@@ -17,12 +20,19 @@ const startConsumer = async () => {
             console.log(`[Consumer] New report received: ${report.id} - ${report.title}`);
 
             await processReport(report);
+
+            //confirmaremos que fue exitoso el proceso
+            channel.ack(msg);
+            console.log(`[Consumer] Report ${report.id} processed and confirmed`);
+
         } catch (err) {
             console.error('[Consumer] Error processing message:', err.message);
+            //nack con requeue: false si fallo por datos invalido no queremos loop infinito
+            channel.nack(msg, false, false);
         }
-    }, { noAck: true });
+    }, { noAck: false });
 
-    console.log('[Consumer] Listening on reports_queue');
+    console.log(`[Consumer] Listening on reports_queue`);
 };
 
 const processReport = async (report) => {

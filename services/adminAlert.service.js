@@ -13,20 +13,24 @@ const syncReportStatus = (reportId, status) => {
     return new Promise((resolve) => {
         const reportUrl = process.env.REPORT_SERVICE_URL || ''
         const url = new URL(`/api/reports/internal/${reportId}/status`, reportUrl)
+              const transport = url.protocol === 'https:' 
+            ? require('https') 
+            : require('http');
         const data = JSON.stringify({ status })
 
         const options = {
             hostname: url.hostname,
-            port:     url.port || 443,
+            port:     url.port || (url.protocol === 'https:' ? 443 : 80),
             path:     url.pathname,
             method:   'PUT',
             headers: {
                 'Content-Type':   'application/json',
                 'Content-Length': Buffer.byteLength(data),
+                'x-internal-key': process.env.INTERNAL_SECRET,
             },
         }
 
-        const req = https.request(options, () => resolve())
+        const req = require('https').request(options, () => resolve())
         req.on('error', (e) => console.error('Failed to sync report status:', e.message))
         req.write(data)
         req.end()
@@ -70,4 +74,4 @@ const reviewAlert = async (id, status) => {
     return alert
 }
 
-module.exports = { createAdminAlert, getAllAlerts, reviewAlert }
+module.exports = { syncReportStatus,createAdminAlert, getAllAlerts, reviewAlert }

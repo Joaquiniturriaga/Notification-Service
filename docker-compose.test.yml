@@ -1,0 +1,10 @@
+services:
+  notification-test:
+    build:
+      context: .
+      target: test
+    environment:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://fake:fake@localhost:5432/fake
+      RABBIT_URL: amqp://fake
+      INTERNAL_SECRET: test-secret-123

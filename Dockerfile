@@ -19,4 +19,5 @@ WORKDIR /app
 COPY --from=prod-deps /app/node_modules ./node_modules
 COPY . .
 EXPOSE 3003
-CMD ["node", "server.js"]
+
+CMD ["node", "index.js"]
